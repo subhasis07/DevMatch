@@ -22,7 +22,7 @@ app.post("/signup", async(req,res)=>{
         await user.save();
         res.send("user added")
     } catch (error) {
-        res.status(400).send("Error while saving user")
+        res.status(400).send(error.message)
     }
     
 })
@@ -67,29 +67,29 @@ app.delete("/user", async(req,res)=>{
 })
 
 app.patch("/user/:userId",async(req,res)=>{
-    const userUpdate=req.body;
-    const userId=req.params.userId;
+    const data=req.body;
+    const userId=req.params?.userId;
 
     try {
-        const ALLOWED_DATA=["skills","photoURL","about"];
-        const isUpdateAllowed=Object.keys(userUpdate).every((key)=>{
-            ALLOWED_DATA.includes(key);
+        const ALLOWED_UPDATES=["skills","photoURL","about"];
+        const isUpdateAllowed=Object.keys(data).every((key)=>{
+            return ALLOWED_UPDATES.includes(key);
         })
         if(!isUpdateAllowed){
             throw new Error("Update not Allowed")
         }
-        if(userUpdate?.skills.length>10){
+        if(data?.skills.length>10){
             throw new Error("Skills should not be >10")
         }
 
-        const user= await User.findByIdAndUpdate({_id:userId}, userUpdate, {
+        const user= await User.findByIdAndUpdate({_id:userId}, data, {
             returnDocument:"before",
             runValidators:true,
         }); // the 3rd parameter is optional if nothing given & next line we log the user --> it will display the result before the update was done..
         console.log(user);
         res.send("user Updated successfully")
     } catch (error) {
-        res.status(404).send("Something went wrong");
+        res.status(404).send(error.message);
     }
 })
 connectDB()

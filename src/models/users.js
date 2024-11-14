@@ -1,5 +1,6 @@
 const mongoose= require('mongoose');
-const validate=require('validator')
+const validate=require('validator');
+
 const userSchema=new mongoose.Schema({
     firstName:{
         type:String,
@@ -26,7 +27,7 @@ const userSchema=new mongoose.Schema({
         required: true,
         validate(value){
             if(!validate.isStrongPassword(value)){
-                throw new Error("Enter a string Password")
+                throw new Error("Enter a strong Password")
             }
         }
     },
@@ -37,7 +38,7 @@ const userSchema=new mongoose.Schema({
     gender:{
         type:String,
         validate(value){  // by default this validator will work only during creating new user ; to apply this validators during updating user, we need to apply options in app.js->patch api -> runValidators:true
-            if(!["male","female", "other"]){
+            if(!["male","female", "other"].includes(value)){
                 throw new Error("Gender not found");
             }
         }
