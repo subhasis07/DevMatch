@@ -1,30 +1,53 @@
 const express= require('express');
 const {connectDB} =require('./config/database');
 const User = require('./models/users');
-
+const { signupValidator } = require('./utils/validators');
+const bcrypt = require('bcrypt')
 const app=express();
 
 app.use(express.json()); //Middleware to convert JSON data to js Obj & it will run in every call as no route is mentioned externally
 
 app.post("/signup", async(req,res)=>{
-
-    const user= new User(req.body);
-
-    //Creatung instance of user model
-    // const user= new User({
-    //     firstName: "Subhasis",
-    //     lastName:"Pal",
-    //     emailID:"abc@gmail.com",
-    //     password:"sub@123",
-    // })
-
     try {
+        //validation of incoming data
+        signupValidator(req);
+        const {firstName, lastName, password, emailID}= req.body;
+
+        //encrypting password;
+        const hashedPassword= await bcrypt.hash(password,10)
+
+        const user= new User({
+            firstName,
+            lastName,
+            emailID,
+            password:hashedPassword
+        });
+
+    
         await user.save();
         res.send("user added")
     } catch (error) {
         res.status(400).send(error.message)
     }
     
+})
+
+app.post("/login", async(req,res)=>{
+    try {
+        const{emailID, password}= req.body;
+        const user =await User.findOne({emailID:emailID});
+        if(!user){
+            throw new Error("Invalid Creds")
+        }
+        const comparePassword= await bcrypt.compare(password,user.password);
+        if(comparePassword){
+            res.send("login success!!!")
+        }else{
+            throw new Error("Invalid creds")
+        }
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
 })
 
 app.get("/user", async(req,res)=>{
