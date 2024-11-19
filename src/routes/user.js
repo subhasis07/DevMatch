@@ -1,6 +1,7 @@
 const express= require('express');
 const { userAuth } = require('../middlewares/auth');
 const connectionModel = require('../models/connectionRequest');
+const User = require('../models/users');
 const userRoute= express.Router();
 
 const allowed_Vals="firstName lastName photoURL age gender about skills"
@@ -50,6 +51,33 @@ userRoute.get("/user/connections", userAuth, async(req,res)=>{
     } catch (err) {
         res.status(400).send("Error: "+ err);
     }
+})
+
+userRoute.get("/user/feed", userAuth, async(req,res)=>{
+    const loggedInUser=req.user;
+
+    const connections=await connectionModel.find({
+        $or:[
+            {fromUserID:loggedInUser._id},
+            {toUserID:loggedInUser._id}
+        ]
+    }).select("fromUserID toUserID")
+
+    const hideUsers=new Set();
+    connections.forEach((req)=>{
+        hideUsers.add(req.fromUserID._id);
+        hideUsers.add(req.toUserID._id);
+    })
+
+    const usersToDisplay=await User.find({
+        $and:[
+            {_id:{
+                $nin:Array.from(hideUsers)
+            }}
+        ]
+    })
+
+    req.json({data:usersToDisplay});
 })
 
 module.exports= userRoute;
