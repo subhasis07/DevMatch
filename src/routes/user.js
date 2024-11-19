@@ -54,30 +54,44 @@ userRoute.get("/user/connections", userAuth, async(req,res)=>{
 })
 
 userRoute.get("/user/feed", userAuth, async(req,res)=>{
-    const loggedInUser=req.user;
 
-    const connections=await connectionModel.find({
-        $or:[
-            {fromUserID:loggedInUser._id},
-            {toUserID:loggedInUser._id}
-        ]
-    }).select("fromUserID toUserID")
+    try {
+        const loggedInUser=req.user;
 
-    const hideUsers=new Set();
-    connections.forEach((req)=>{
-        hideUsers.add(req.fromUserID._id);
-        hideUsers.add(req.toUserID._id);
-    })
+        const page=parseInt(req.query.page) ||1;
+        let limit=parseInt(req.query.limit) ||10;
+        limit= limit>50? 50 : limit;
+        const skip=(page-1)*limit;
 
-    const usersToDisplay=await User.find({
-        $and:[
-            {_id:{
-                $nin:Array.from(hideUsers)
-            }}
-        ]
-    })
+        const connections=await connectionModel.find({
+            $or:[
+                {fromUserID:loggedInUser._id},
+                {toUserID:loggedInUser._id}
+            ]
+        }).select("fromUserID toUserID")
 
-    req.json({data:usersToDisplay});
+        const hideUsers=new Set();
+        connections.forEach((req)=>{
+            hideUsers.add(req.fromUserID._id);
+            hideUsers.add(req.toUserID._id);
+        })
+
+        const usersToDisplay=await User.find({
+            $and:[
+                {_id:{
+                    $nin:Array.from(hideUsers)
+                }}
+            ]
+        })
+        .select(allowed_Vals)
+        .skip(skip)
+        .limit(limit)
+
+        req.json({data:usersToDisplay});
+    } catch (error) {
+        res.status(400).send("Error: "+error.message)
+    }
+    
 })
 
 module.exports= userRoute;
