@@ -1,4 +1,4 @@
-A scalable backend system for a DevTinder-like application that enables users to connect, send/receive connection requests, and manage profiles securely. Built with Node.js, Express.js, Mongoose, and JWT.
+A that enables users to connect, send/receive connection requests, and manage profiles securely. Built with Node.js, Express.js, Mongoose, and JWT.
 
 
 ## Features
