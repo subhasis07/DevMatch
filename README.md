@@ -47,8 +47,24 @@ Testing Tool: Postman
 | GET    | `/user/feed`            | Fetch feed with pagination        |
 | POST   | `/user/connections`     | List all Connections              |
 
-## Folder Structure:
+## Folder Structure
 
-```src/ ├── config/ │ └── database.js ├── middlewares/ │ └── auth.js ├── models/ │ ├── connectionRequest.js │ └── users.js ├── routes/ │ ├── auth.js │ ├── profile.js │ ├── request.js │ └── user.js ├── utils/ │ └── validators.js └── app.js```
+src/
+├── config/
+│   └── database.js
+├── middlewares/
+│   └── auth.js
+├── models/
+│   ├── connectionRequest.js
+│   └── users.js
+├── routes/
+│   ├── auth.js
+│   ├── profile.js
+│   ├── request.js
+│   └── user.js
+├── utils/
+│   └── validators.js
+└── app.js
+
 
 
