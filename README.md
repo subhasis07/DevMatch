@@ -1,4 +1,4 @@
-A that enables users to connect, send/receive connection requests, and manage profiles securely. Built with Node.js, Express.js, Mongoose, and JWT.
+A backend system that enables users to connect, send/receive connection requests, and manage profiles securely. Built with Node.js, Express.js, Mongoose, and JWT.
 
 
 ## Features
