@@ -48,7 +48,7 @@ Testing Tool: Postman
 | POST   | `/user/connections`     | List all Connections              |
 
 ## Folder Structure
-
+```
 src/
 ├── config/
 │   └── database.js
@@ -65,6 +65,7 @@ src/
 ├── utils/
 │   └── validators.js
 └── app.js
+```
 
 
 
