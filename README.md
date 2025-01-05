@@ -11,9 +11,7 @@ A backend system that enables users to connect, send/receive connection requests
 
 
 ## Tech Stack
-Node.js, Express.js, MongoDB, bcrypt, JWT
-Validation: Custom validators and middleware
-Testing Tool: Postman
+Node.js, Express.js, MongoDB, bcrypt, JWT, Postman
 
 ## API Endpoints
 
